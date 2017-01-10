@@ -65,12 +65,13 @@ int testSimpleClient() {
     return 0;
 }
 
-int testPortClient() {
+    int testPortClient() {
     int sockfd, bytes_read;
     struct sockaddr_in dest;
     char buffer[MAXBUF];
     
     /*---Create socket for streaming---*/
+    printf("creating socket...\n");
     if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
     {
         perror("Socket");
@@ -78,6 +79,7 @@ int testPortClient() {
     }
     
     /*---Initialize server address/port struct---*/
+    printf("Initializing server address/port...\n");
     bzero(&dest, sizeof(dest));
     dest.sin_family = AF_INET;
     if ( inet_aton(SERVER_ADDR, &dest.sin_addr.s_addr) == 0 )
@@ -88,6 +90,7 @@ int testPortClient() {
     dest.sin_port = htons(PORT_FTP);
     
     /*---Connect to server---*/
+    printf("connecting to server...\n");
     if ( connect(sockfd, (struct sockaddr *)&dest, sizeof(dest)) != 0 )
     {
         perror("Connect");
@@ -95,10 +98,12 @@ int testPortClient() {
     }
     
     /*---If there is a message to send server, send it with a '\n' (newline)---*/
+    printf("sending message to server...\n");
     sprintf(buffer, "Blah Blah Blah!\n");
     send(sockfd, buffer, strlen(buffer), 0);
     
     /*---While there's data, read and print it---*/
+    printf("Beginning to read...\n");
     do
     {
         bzero(buffer, MAXBUF);
@@ -109,13 +114,14 @@ int testPortClient() {
     while ( bytes_read > 0 );
     
     /*---Clean up---*/
+    printf("closing socket...\n");
     close(sockfd);
     return 0;
 }
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        testSimpleClient();
+//        testSimpleClient();
         testPortClient();
     }
     return 0;
